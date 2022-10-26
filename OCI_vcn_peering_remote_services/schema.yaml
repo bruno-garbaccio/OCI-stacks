@@ -90,7 +90,7 @@ variables:
     default: "vcn2"
     required: true
   r2_compartment_ocid:
-    title: "VCN compartment region B"
+    title: "VCN compartment region 2"
     type: oci:identity:compartment:id
     default: ${r1_compartment_ocid}
 
