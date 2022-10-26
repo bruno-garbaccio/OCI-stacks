@@ -1,7 +1,7 @@
 # Stack to create a Remote Peering between 2 Oracle Cloud Infrastructure OCI Regions. 
 
 
-./architecture_diagram.png
+![architecture diagram](architecture_diagram.png)
 
 
 ## Acknowledments
