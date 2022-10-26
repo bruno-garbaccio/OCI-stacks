@@ -1,0 +1,128 @@
+---
+title: Remote Peering
+description: Oracle Cloud Remote peering between 2 regions
+schemaVersion: 1.1.0
+version: "2022100901"
+informationalText: Automated Remote Peering configuration
+logoUrl: https://cloudmarketplace.oracle.com/marketplace/content?contentId=80357668
+
+source:
+  type: marketplace
+  reference: 67628143
+locale: "en"
+
+
+variableGroups:
+  - title: "Network options Region 1"
+    variables:
+      - ${region1}
+      - ${r1_compartment_ocid}
+      - ${r1_name_vcn}
+      - ${r1_cidr_vcn}
+      - ${r1_cidr_pubnet}
+      - ${r1_cidr_privnet}
+  - title: "Network options Region 2"
+    variables:
+      - ${region2}
+      - ${r2_compartment_ocid}
+      - ${r2_name_vcn}
+      - ${r2_cidr_vcn}
+      - ${r2_cidr_pubnet}
+      - ${r2_cidr_privnet}
+  - title: "Hidden"
+    variables:
+      - ${tenancy_ocid}
+      - ${region}
+    visible: false
+
+variables:
+  region1:
+    type: oci:identity:region:name 
+    title: "Region 1"
+    default: ${region}
+    description: "Region 1 to Peer"
+
+  r1_compartment_ocid:
+    title: "target compartment"
+    type: oci:identity:compartment:id
+    default: ${compartment_ocid}
+    required: true
+
+  r1_name_vcn:
+    type: string
+    title: "VCN Name 1"
+    description: "VCN name in Region 1"
+    default: "vcn1"
+    required: true
+
+  r1_cidr_vcn:
+    type: string
+    title: "VCN IP range"
+    description: "VCN Subnet Region 1"
+    default: "10.0.0.0/16"
+    required: true
+
+  r1_cidr_pubnet:
+    type: string
+    title: "Public Subnet Region 1"
+    default: "10.0.0.0/24"
+    description: "Must be within VCN subnet"
+    required: true
+
+  r1_cidr_privnet:
+    type: string
+    title: "Private Subnet Region 1"
+    default: "10.0.1.0/24"
+    description: "Must be within VCN subnet"
+    required: true
+
+
+  region2:
+    type: oci:identity:region:name 
+    title: "Region 2"
+    default: ""
+    description: "Region 2 to Peer"
+
+  r2_name_vcn:
+    type: string
+    title: "VCN Name 2"
+    description: "VCN name in Region 2"
+    default: "vcn2"
+    required: true
+  r2_compartment_ocid:
+    title: "VCN compartment region B"
+    type: oci:identity:compartment:id
+    default: ${r1_compartment_ocid}
+
+
+  r2_cidr_vcn:
+    type: string
+    title: "VCN Subnet Region 2"
+    description: "VCN subnet"
+    default: "172.16.0.0/16"
+    required: true
+  r2_cidr_pubnet:
+    type: string
+    title: "Public Subnet Region 2"
+    default: "172.16.0.0/24"
+    description: "Must be within VCN subnet"
+    required: true
+
+  r2_cidr_privnet:
+    type: string
+    title: "Private Subnet Region 2"
+    default: "172.16.1.0/24"
+    description: "Must be within VCN subnet"
+    required: true
+
+
+  authorized_ips:
+    type: string
+    title: "Initial CIDR range allowed to SSH"
+    default: "0.0.0.0/0"
+    description: "Allowed SSH network in CIDR notation"
+    required: true
+
+
+
+
