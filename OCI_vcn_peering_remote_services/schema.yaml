@@ -29,6 +29,15 @@ variableGroups:
       - ${r2_cidr_vcn}
       - ${r2_cidr_pubnet}
       - ${r2_cidr_privnet}
+  - title: "Network options Region 3"
+    variables:
+      - ${is_region3}
+      - ${region3}
+      - ${r3_compartment_ocid}
+      - ${r3_name_vcn}
+      - ${r3_cidr_vcn}
+      - ${r3_cidr_pubnet}
+      - ${r3_cidr_privnet}      
   - title: "Hidden"
     variables:
       - ${tenancy_ocid}
@@ -40,6 +49,7 @@ variables:
     type: oci:identity:region:name 
     title: "Region 1"
     default: ${region}
+    required: true
     description: "Region 1 to Peer"
 
   r1_compartment_ocid:
@@ -81,6 +91,7 @@ variables:
     type: oci:identity:region:name 
     title: "Region 2"
     default: ""
+    required: true
     description: "Region 2 to Peer"
 
   r2_name_vcn:
@@ -92,6 +103,7 @@ variables:
   r2_compartment_ocid:
     title: "VCN compartment region 2"
     type: oci:identity:compartment:id
+    required: true
     default: ${r1_compartment_ocid}
 
 
@@ -115,6 +127,72 @@ variables:
     description: "Must be within VCN subnet"
     required: true
 
+
+
+  is_region3:
+    type: boolean 
+    title: "Add Region 3"
+    default: false
+    description: "Add a 3rd region to peer, all to all"
+
+  region3:
+    type: oci:identity:region:name 
+    title: "Region 3"
+    default: ""
+    required: true
+    description: "Region 3 to Peer"
+    visible:
+      and:
+        - ${is_region3}
+
+  r3_name_vcn:
+    type: string
+    title: "VCN Name 3"
+    description: "VCN name in Region 3"
+    default: "vcn3"
+    required: true
+    visible:
+      and:
+        - ${is_region3}
+
+  r3_compartment_ocid:
+    title: "VCN compartment region 3"
+    type: oci:identity:compartment:id
+    default: ${r1_compartment_ocid}
+    required: true
+    visible:
+      and:
+        - ${is_region3}
+
+  r3_cidr_vcn:
+    type: string
+    title: "VCN Subnet Region 3"
+    description: "VCN subnet"
+    default: "192.168.0.0/16"
+    required: true
+    visible:
+      and:
+        - ${is_region3}
+
+  r3_cidr_pubnet:
+    type: string
+    title: "Public Subnet Region 3"
+    default: "192.168.0.0/24"
+    description: "Must be within VCN subnet"
+    required: true
+    visible:
+      and:
+        - ${is_region3}
+
+  r3_cidr_privnet:
+    type: string
+    title: "Private Subnet Region 3"
+    default: "192.168.1.0/24"
+    description: "Must be within VCN subnet"
+    required: true    
+    visible:
+      and:
+        - ${is_region3}
 
   authorized_ips:
     type: string

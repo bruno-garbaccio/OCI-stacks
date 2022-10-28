@@ -36,7 +36,18 @@ resource oci_core_route_table r1-pubnet-rt {
   route_rules {
     destination       = var.r2_cidr_vcn
     network_entity_id = oci_core_drg.r1_drg.id
+    description = "Route rule ro ${var.r2_name_vcn}"
   }
+
+  dynamic "route_rules" {
+    for_each = local.list_vcn3
+    content {
+      destination       = route_rules.value
+      network_entity_id = oci_core_drg.r1_drg.id
+      description = "Route rule ro ${var.r3_name_vcn}"
+    }
+  } 
+
   dynamic "route_rules" {
     for_each = local.oci_cidr_region2
     content {
@@ -46,7 +57,15 @@ resource oci_core_route_table r1-pubnet-rt {
       network_entity_id = oci_core_drg.r1_drg.id
     }
   }
-
+  dynamic "route_rules" {
+    for_each = local.oci_cidr_region3
+    content {
+      destination       = route_rules.value
+      destination_type  = "CIDR_BLOCK"
+      description = "addresses for ${var.region3} services"
+      network_entity_id = oci_core_drg.r1_drg.id
+    }
+  }
 }
 
 # ------ Create a new Route Table for the private subnet
@@ -59,6 +78,16 @@ resource oci_core_route_table r1-privnet-rt {
   route_rules {
     destination       = var.r2_cidr_vcn
     network_entity_id = oci_core_drg.r1_drg.id
+    description = "Route rule ro ${var.r2_name_vcn}"
+  }
+
+  dynamic "route_rules" {
+    for_each = local.list_vcn3
+    content {
+      destination       = route_rules.value
+      network_entity_id = oci_core_drg.r1_drg.id
+      description = "Route rule ro ${var.r3_name_vcn}"
+    }
   }
   route_rules {
     destination       = "0.0.0.0/0"
@@ -78,7 +107,16 @@ resource oci_core_route_table r1-privnet-rt {
       description = "addresses for ${var.region2} services"
       network_entity_id = oci_core_drg.r1_drg.id
     }
-  }     
+  }  
+  dynamic "route_rules" {
+    for_each = local.oci_cidr_region3
+    content {
+      destination       = route_rules.value
+      destination_type  = "CIDR_BLOCK"
+      description = "addresses for ${var.region3} services"
+      network_entity_id = oci_core_drg.r1_drg.id
+    }
+  }   
 }
 
 # ------ Create a new security list to be used in the new public subnet
@@ -96,11 +134,23 @@ resource oci_core_security_list r1-pubnet-sl {
   ingress_security_rules {
     protocol = "all"
     source   = var.r1_cidr_vcn
+    description = "all Protocols to ${var.r1_name_vcn}"
   }
   ingress_security_rules {
     protocol = "all"
     source   = var.r2_cidr_vcn
+    description = "all Protocols to ${var.r2_name_vcn}"
   }
+
+  dynamic "ingress_security_rules" {
+    for_each = local.list_vcn3
+    content {
+      protocol = "all"
+      source   = ingress_security_rules.value
+      description = "all Protocols to ${var.r3_name_vcn}"
+    }
+  }   
+
   ingress_security_rules {
     protocol = "6" # tcp
     source   = var.authorized_ips
@@ -137,12 +187,23 @@ resource oci_core_security_list r1-privnet-sl {
   ingress_security_rules {
     protocol = "all"
     source   = var.r1_cidr_vcn
+    description = "all Protocols to ${var.r1_name_vcn} "
   }
 
   ingress_security_rules {
     protocol = "all"
     source   = var.r2_cidr_vcn
+    description = "all Protocols to ${var.r2_name_vcn}"
   }
+
+  dynamic "ingress_security_rules" {
+    for_each = local.list_vcn3
+    content {
+      protocol = "all"
+      source   = ingress_security_rules.value
+      description = "all Protocols to ${var.r3_name_vcn}"
+    }
+  }   
 
   ingress_security_rules {
     protocol = "6" # tcp
@@ -198,12 +259,12 @@ resource oci_core_drg_attachment r1_drg_attachment {
   }
 }
 
-# ------ Enable the remote VCN peering (region1 = acceptor)
-resource oci_core_remote_peering_connection r1-acceptor {
+# ------ Enable the remote VCN peering (region12 = acceptor)
+resource oci_core_remote_peering_connection r1-2-acceptor {
   provider       = oci.r1
   compartment_id = var.r1_compartment_ocid
   drg_id         = oci_core_drg.r1_drg.id
-  display_name   = "remotePeeringConnectionR1"
+  display_name   = "remotePeeringConnectionR12"
 }
 
 # ----- Create NAT GW
@@ -250,6 +311,15 @@ resource oci_core_route_table r1-sgw-rt {
 
   route_rules {
     destination       = var.r2_cidr_vcn
-    network_entity_id = oci_core_drg.r1_drg.id
+    network_entity_id = oci_core_drg.r1_drg.id 
+    description = "CIDR range for ${var.r2_name_vcn}"
   }
+  dynamic "route_rules" {
+    for_each = local.list_vcn3
+    content {
+      destination       = route_rules.value
+      network_entity_id = oci_core_drg.r1_drg.id
+      description = "CIDR range for ${var.r3_name_vcn}"
+    }
+  }  
 }
