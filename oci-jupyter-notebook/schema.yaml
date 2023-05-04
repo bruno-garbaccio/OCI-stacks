@@ -1,0 +1,399 @@
+---
+title: Jupyter notebook on GPU
+description: Deploys a GPU VM with Anaconda, tensorflow and jupyter notebook
+schemaVersion: 1.1.0
+version: "2021040901"
+informationalText: Automated Jupyter notebook deployment on GPU
+logoUrl: https://cloudmarketplace.oracle.com/marketplace/content?contentId=80357668
+
+source:
+  type: marketplace
+  reference: 67628143
+locale: "en"
+
+outputs:
+  jupyter:
+    title: "jupyter Instance Public IP"
+    type: copyableString
+    visible: true
+
+variableGroups:
+  - title: "GPU configuration"
+    variables:
+      - ${targetCompartment}
+      - ${ssh_key}
+      - ${use_custom_name}
+      - ${jupyter_name}
+  - title: "Instance options"
+    variables:
+      - ${jupyter_ad}
+      - ${jupyter_shape}
+      - ${jupyter_ocpus}
+      - ${jupyter_ocpus_denseIO_flex}
+      - ${jupyter_custom_memory}
+      - ${jupyter_memory}
+      - ${jupyter_boot_volume_size}
+
+  - title: "API authentication, needed for autoscaling"
+    variables:
+      - ${inst_prin}
+      - ${api_user_ocid}
+      - ${api_fingerprint}
+      - ${api_user_key}
+    visible: false 
+  - title: "Advanced jupyter options"
+    variables:
+      - ${unsupported_jupyter_image}
+      - ${jupyter_username}
+  - title: "Advanced storage options"
+    variables:
+      - ${use_advanced}
+      - ${jupyter_block}
+      - ${jupyter_block_volume_size}
+      - ${jupyter_block_volume_performance}
+  - title: "Network options"
+    variables:
+      - ${use_existing_vcn}
+      - ${vcn_compartment}
+      - ${vcn_id}
+      - ${private_deployment}
+      - ${public_subnet_id}
+      - ${private_subnet_id}
+      - ${vcn_subnet}
+      - ${public_subnet}
+      - ${private_subnet}
+  - title: "Hidden"
+    variables:
+      - ${region}
+      - ${tenancy_ocid}
+      - ${ssh_cidr}
+      - ${marketplace_source_images}
+      - ${marketplace_version_id}
+    visible: false
+  - title: "Debug"
+    variables: 
+      - ${configure}
+    visible: false
+
+variables:
+  targetCompartment:
+    title: "target compartment"
+    type: oci:identity:compartment:id
+    default: ${compartment_ocid}
+    required: true
+  ssh_key:
+    type: oci:core:ssh:publickey
+    title: "Public SSH key"
+    description: "Public SSH key"
+    required: true
+  use_custom_name:
+    type: boolean
+    title: "use custom cluster name"
+    description: "Use custom name for the cluster"
+    default: false
+  jupyter_name:
+    title: "Name of the instance"
+    description: "Custom name of the GPU machine"
+    default: ""
+    type: string
+    visible:
+      and:
+        - ${use_custom_name}
+    required: true
+  jupyter_ad:
+    type: oci:identity:availabilitydomain:name
+    dependsOn:
+      compartmentId: ${targetCompartment}
+    visible: complexExpression
+    required: true
+    description: "Availability Domain for jupyter host"
+    title: "Availability Domain"
+    #default: ${ad}
+  jupyter_shape:
+    type: oci:core:instanceshape:name
+    dependsOn:
+      compartmentId: ${targetCompartment}
+    required: true
+    default: VM.GPU.A10.1
+  jupyter_ocpus:
+    title: "Cores"
+    type: integer
+    description: Number of OCPU's for flex shape
+    minimum: 1
+    maximum: 64
+    default: 2
+    visible:
+      and: 
+        - or: 
+          - eq:
+            - ${jupyter_shape}
+            - "VM.Standard.E3.Flex"
+          - eq: 
+            - ${jupyter_shape}
+            - "VM.Standard.E4.Flex"
+          - eq:
+            - ${jupyter_shape}
+            - "VM.Optimized3.Flex"
+          - eq: 
+            - ${jupyter_shape}
+            - "VM.Standard.A1.Flex"
+          - eq:
+            - ${jupyter_shape}
+            - "VM.Standard3.Flex"
+    required: true
+
+  jupyter_ocpus_denseIO_flex:
+    title: "Cores"
+    type: enum
+    description: Number of OCPU's for Dense IO flex shape
+    enum:
+      - 8
+      - 16
+      - 32
+    default: 8
+    visible:
+      and: 
+        - or: 
+          - eq:
+            - ${jupyter_shape}
+            - "VM.DenseIO.E4.Flex"
+    required: true
+
+  jupyter_custom_memory: 
+    title: Use custom memory size
+    type: boolean
+    default: false
+    visible:
+      and: 
+        - or: 
+          - eq:
+            - ${jupyter_shape}
+            - "VM.Standard.E3.Flex"
+          - eq:
+            - ${jupyter_shape}
+            - "VM.Optimized3.Flex"
+          - eq: 
+            - ${jupyter_shape}
+            - "VM.Standard.E4.Flex"
+          - eq: 
+            - ${jupyter_shape}
+            - "VM.Standard.A1.Flex"
+          - eq:
+            - ${jupyter_shape}
+            - "VM.Standard3.Flex"
+  jupyter_memory:
+    title: Memory in GBS
+    type: integer
+    description: Number of memory for flex shape. Minimum 1GB per core.
+    minimum: 1
+    maximum: 1024
+    default: 16
+    visible:
+      and: 
+        - and: 
+          - or: 
+            - eq:
+              - ${jupyter_shape}
+              - "VM.Standard.E3.Flex"
+            - eq:
+              - ${jupyter_shape}
+              - "VM.Optimized3.Flex"
+            - eq: 
+              - ${jupyter_shape}
+              - "VM.Standard.E4.Flex"
+            - eq: 
+              - ${jupyter_shape}
+              - "VM.Standard.A1.Flex"
+            - eq:
+              - ${jupyter_shape}
+              - "VM.Standard3.Flex"
+        - and: 
+            - ${jupyter_custom_memory}
+    required: true
+
+
+
+
+  jupyter_username: 
+    title: "Default username for jupyter" 
+    description: "Custom image ID for jupyter"
+    type: string
+    default: "opc"
+    required: true
+    visible: true
+ 
+  unsupported_jupyter_image:
+    title: "Gen2-GPU OCID image"
+    description: "Gen2-GPU OCID images. Reference of image per region https://docs.oracle.com/en-us/iaas/images/."
+    type: string
+    required: true
+    visible: true
+    default: "ocid1.image.oc1.eu-frankfurt-1.aaaaaaaaqdanade5ewlv4dcbin5jfochou7fuxkoaqfocqlvztoqnb5doiza"
+
+  jupyter_boot_volume_size:
+    type: integer
+    required: true
+    minimum: 50
+    title: "Size of the boot volume in GB"
+    default: 50
+  jupyter_block:
+    type: boolean
+    title: Additional block volume for shared space
+    visible: false
+    default: false
+  jupyter_block_volume_size:
+    required: true
+    type: integer
+    title: "Size of the additional volume in GB"
+    default: 1000
+    visible:
+      and:
+        - and:
+            - ${jupyter_block}
+            - ${use_advanced}
+  jupyter_block_volume_performance:
+    type: enum
+    title: "Block volume performance"
+    required: true
+    enum:
+      - "0.  Lower performance"
+      - "10. Balanced performance"
+      - "20. High Performance"
+    default: "10. Balanced performance"
+    visible:
+      and:
+        - and:
+            - ${jupyter_block}
+            - ${use_advanced}
+
+
+
+  private_deployment:
+    type: boolean
+    title: "Deploy Master Node without a public IP"
+    description: "Deploy with no Public IP for the master node. 'Master Node Subnet' must be a Private subnet. This will require the creation of a jupyter service, VPN or FastConnect to connect via ssh to the master node"      
+    default: false
+  use_existing_vcn:
+    type: boolean
+    title: "Use Existing VCN"
+    description: "Use existing VCN or create new one. If true, make sure the security lists are correctly set in the subnets (ex: Open traffic within VCN)"
+    default: false
+  vcn_compartment:
+    title: "VCN compartment"
+    type: oci:identity:compartment:id
+    visible: ${use_existing_vcn}
+    default: ${targetCompartment}
+    required: true
+  vcn_id:
+    type: oci:core:vcn:id
+    visible:
+      and:
+        - ${use_existing_vcn}
+    title: "Existing network"
+    default: ''
+    required: true
+    dependsOn:
+      compartmentId: ${vcn_compartment}
+  public_subnet_id:
+    title: Master Node Subnet
+    type: oci:core:subnet:id
+    dependsOn:
+      compartmentId: ${vcn_compartment}
+      vcnId: ${vcn_id}
+      hidePrivateSubnet: false
+    # visible: 
+      # and:
+      #   - not:
+      #     - ${private_deployment}
+      #   - and: 
+      #     - ${use_existing_vcn}
+    visible: ${use_existing_vcn}  
+    required: true
+  private_subnet_id:
+    title: Private Subnet
+    type: oci:core:subnet:id
+    dependsOn:
+      compartmentId: ${vcn_compartment}
+      vcnId: ${vcn_id}
+      hidePublicSubnet: true
+    visible: ${use_existing_vcn}
+    required: true
+  vcn_subnet:
+    type: string
+    title: "VCN IP range"
+    description: "VCN subnet"
+    default: "172.16.0.0/21"
+    required: true
+    visible:
+      not:
+        - ${use_existing_vcn}
+  public_subnet:
+    type: string
+    title: "Jupyter Node subnet IP range"
+    default: "172.16.0.0/24"
+    description: "Must be within VCN subnet"
+    required: true
+    visible:
+      not:
+        - ${use_existing_vcn}
+
+  private_subnet:
+    type: string
+    title: "Private subnet IP range"
+    default: "172.16.4.0/22"
+    description: "Must be within VCN subnet"
+    required: true
+    visible:
+      not:
+        - ${use_existing_vcn}
+  ssh_cidr:
+    type: string
+    title: "Initial CIDR range allowed to SSH"
+    default: "0.0.0.0/0"
+    description: "Allowed SSH network in CIDR notation"
+    required: true
+#   visible:
+#     not:
+#       - ${use_existing_vcn}
+
+
+
+  inst_prin:
+    type: boolean
+    title: "Use Instance Principal instead of configuration file" 
+    description: "You will need to set a dynamic group and policy to allow the jupyter to authenticate. This will not be created automatically." 
+    default: true
+
+  api_user_key:
+    type: file
+    title: "API private key"
+    default: ""
+    visible:
+      not:
+        - ${inst_prin}
+    required: true
+
+  api_fingerprint:
+    type: string
+    title: "API fingerprint"
+    default: ""
+    visible:
+      not:
+        - ${inst_prin}
+    required: true
+
+  api_user_ocid:
+    type: string
+    title: "API User OCID"
+    default: ""
+    visible:
+      not:
+        - ${inst_prin}
+    required: true
+        
+  configure: 
+    type: boolean
+    title: "Configure system"
+    default: true
+    description: "If unchecked, cluster will be launched but left unconfigured"
+

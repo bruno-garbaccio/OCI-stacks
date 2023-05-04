@@ -1,0 +1,12 @@
+#!/bin/bash
+
+
+
+export PATH="/opt/oci-hpc/miniconda/bin:$PATH"
+source activate
+conda activate tf
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CONDA_PREFIX/lib/
+
+jupyter notebook --no-browser --NotebookApp.allow_remote_access True --NotebookApp.allow_origin '*' --NotebookApp.ip '0.0.0.0'
+

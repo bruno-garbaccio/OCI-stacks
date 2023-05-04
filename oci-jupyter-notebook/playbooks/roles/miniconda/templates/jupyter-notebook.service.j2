@@ -1,0 +1,15 @@
+[Unit]
+Description=Jupyter-Notebook Daemon
+
+[Service]
+Type=simple
+ExecStart=/opt/oci-hpc/services/start_jupyter_service.sh
+WorkingDirectory=/opt/oci-hpc/samples
+User=opc
+Group=opc
+PIDFile=/run/jupyter-notebook.pid
+Restart=on-failure
+RestartSec=60s
+
+[Install]
+WantedBy=default.target

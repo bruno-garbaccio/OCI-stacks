@@ -1,0 +1,17 @@
+#!/bin/bash
+
+#token=$(journalctl -u jupyter-notebook.service | grep -o '?token.*' | tail -1)
+
+export PATH="/opt/oci-hpc/miniconda/bin:$PATH"
+source activate
+conda activate tf
+token=$(jupyter notebook list  | grep -o '?token.*' | tail -1 | cut -d' ' -f1)
+port=$(jupyter notebook list  | grep 'token' | tail -1 | cut -d':' -f3 | cut -d'/' -f1)
+ip={{host}}
+url=$ip:$port/$token
+
+jq -n --arg token "$token" \
+      --arg port "$port"   \
+      --arg ip "$ip"       \
+      --arg url "$url"     \
+      '{"token":$token, "port":$port, "ip":$ip, "url":$url}'

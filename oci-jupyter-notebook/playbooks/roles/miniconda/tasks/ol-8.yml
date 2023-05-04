@@ -1,0 +1,81 @@
+---
+- name: Script to download and configure miniconda
+  template:
+    src: 'configure_miniconda.sh.j2'
+    dest: '/tmp/configure_miniconda.sh'
+    mode: 0700
+  
+- name: execute script. Create "tf" env with tensorflow, matplotlib, jupyterlab
+  script: /tmp/configure_miniconda.sh
+
+#- name: Download Miniconda3-latest-Linux-x86_64.sh
+#  get_url:
+#    url: https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+#    dest: /tmp/miniconda.sh
+#    mode: '0700'
+
+#- name: execute Miniconda installation
+#  command: bash /tmp/miniconda.sh -b -p /opt/oci-hpc/miniconda
+
+#- name: Create venv tf in conda on python 3.9
+#  command: source /opt/oci-hpc/miniconda/bin/activate && conda create --name tf python=3.9 -y   
+
+#- name: Install correct version of cudnn and cuda toolkit
+#  command: source /opt/oci-hpc/miniconda/bin/activate tf && conda install -c conda-forge cudatoolkit=11.2.2 cudnn=8.1.0 -y
+
+#- name: Install tensorflow in venv
+#  command: source /opt/oci-hpc/miniconda/bin/activate tf && python3 -m pip install {{ item.name }}
+#  with_items:
+#    - tensorflow
+#    - matplotlib
+#    - jupyterlab
+
+- name: Create directory for jupyter service script startup
+  file:
+    name: '/opt/oci-hpc/services'
+    state: directory
+
+- name: Copy startup script
+  template:
+    src: 'start_jupyter_service.sh.j2'
+    dest: '/opt/oci-hpc/services/start_jupyter_service.sh'
+    mode: 0700
+
+- name: Create systemd unit dirs
+  become: true
+  template:
+    src: 'jupyter-notebook.service.j2'
+    dest: '/etc/systemd/system/jupyter-notebook.service'
+
+
+- name: restart jupyter-notebook
+  become: true
+  service:
+    name: jupyter-notebook
+    state: restarted
+    enabled: true
+
+#- name: get token
+#  shell:
+#    cmd: |
+#         journalctl -u jupyter-notebook.service | grep -o "?token.*" | tail -1
+#  register: grep_token
+
+
+#- name: Remove file jupyter
+#  file:
+#    path: /tmp/jupyter
+#    state: absent
+
+
+#- name: Creating a file with content
+#  copy:
+#    dest: "/tmp/jupyter"
+#    content: |
+#      {{ grep_token.stdout }}
+
+- name: Copy external data source script
+  template:
+    src: 'json.sh.j2'
+    dest: '/opt/oci-hpc/bin/json.sh'
+    mode: 0700

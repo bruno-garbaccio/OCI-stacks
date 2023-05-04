@@ -1,0 +1,19 @@
+#!/bin/bash
+
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O /tmp/miniconda.sh
+
+bash /tmp/miniconda.sh -b -p /opt/oci-hpc/miniconda
+#/opt/oci-hpc/miniconda/bin/conda init bash
+export PATH="/opt/oci-hpc/miniconda/bin:$PATH"
+source activate
+#eval "$(/opt/oci-hpc/miniconda/bin/conda shell.bash hook)"
+
+conda create --name tf python=3.9 -y
+conda activate tf
+conda install -c conda-forge cudatoolkit=11.2.2 cudnn=8.1.0 -y
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$CONDA_PREFIX/lib/
+python3 -m pip install tensorflow
+python3 -m pip install matplotlib
+python3 -m pip install jupyterlab
+
+

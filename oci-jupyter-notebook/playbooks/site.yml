@@ -1,0 +1,12 @@
+
+
+- hosts: jupyter
+  vars: 
+    destroy: false
+    initial: true
+  gather_facts: true
+  roles: 
+    - boot-volume
+    - firewall
+    - miniconda
+
