@@ -1,0 +1,9 @@
+
+- hosts: monitoring_server
+  become: true
+  gather_facts: true
+  roles: 
+    - firewall
+    - grafana  
+    - prometheus
+

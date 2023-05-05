@@ -1,0 +1,100 @@
+---
+- name: create prometheus group
+  become: true
+  group:
+    name: prometheus
+    state: present
+    system: yes
+
+- name: create prometheus user
+  become: true
+  user:
+    name: prometheus
+    comment: "prometheus user"
+    group: prometheus
+
+- name: Create /etc/prometheus directory
+  become: true
+  file:
+    path: "/etc/prometheus"
+    state: directory
+    owner: 'prometheus'
+    group: 'prometheus'
+
+- name: Create /var/lib/prometheus directory
+  become: true
+  file:
+    path: "/var/lib/prometheus"
+    state: directory
+    owner: 'prometheus'
+    group: 'prometheus'
+
+- name: Download Prometheus {{ prometheus_version }}
+  become: prometheus
+  get_url:
+    url: https://github.com/prometheus/prometheus/releases/download/v{{ prometheus_version }}/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz
+    dest: /tmp/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz   
+
+- name: Extract prometheus-{{ prometheus_version }}.linux-amd64.tar.gz into /var/lib/prometheus/
+  become: true
+  unarchive:
+    src: /tmp/prometheus-{{ prometheus_version }}.linux-amd64.tar.gz  
+    dest: /var/lib/prometheus/
+    extra_opts: [--strip-components=1]
+    remote_src: yes
+
+- name: Recursively change ownership of a /var/lib/prometheus/
+  become: true
+  file:
+    path: /var/lib/prometheus
+    state: directory
+    recurse: yes
+    owner: prometheus
+    group: prometheus    
+
+- name: Configure prometheus jobs in prometheus.yml
+  become: true
+  template:
+    src: 'prometheus.yml.j2'
+    dest: '/etc/prometheus/prometheus.yml'
+    owner: prometheus
+    group: prometheus     
+
+- name: Configure prometheus service
+  become: true
+  copy:
+    src: 'prometheus.service'
+    dest: '/usr/lib/systemd/system/prometheus.service'  
+
+- name: Create a symbolic link prometheus
+  become: true
+  file:
+    src: /var/lib/prometheus/prometheus
+    dest: /usr/bin/prometheus
+    state: link     
+
+- name: Create a symbolic link promtool
+  become: true
+  file:
+    src: /var/lib/prometheus/promtool
+    dest: /usr/bin/promtool
+    state: link 
+
+
+- name: Run command deactivate selinux for prometheus, chcon  
+  become: true
+  command: chcon --reference=/bin/less /usr/bin/prometheus
+
+- name: Run command deactivate selinux for prometheus, semanage  
+  become: true
+  command: semanage fcontext -a -t bin_t "/usr/bin/prometheus"
+  register: prometheus
+  failed_when: "prometheus.rc != 0 and 'already defined' not in prometheus.stderr"
+
+
+- name: start prometheus.service
+  become: true
+  service:
+    name: prometheus.service
+    state: restarted
+    enabled: true

@@ -1,0 +1,10 @@
+
+- hosts: bastion, monitoring_server, compute
+  become: true
+  vars:
+    destroy: true
+  gather_facts: true
+  roles: 
+    - node_export
+
+
