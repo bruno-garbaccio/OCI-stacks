@@ -1,6 +1,6 @@
 # Ansible roles to configure Prometheus.
 
-The repo propose a monitoring setup to complete the existing Oracle Stack "oci-hpc" https://github.com/oracle-quickstart/oci-hpc
+This repo proposes a monitoring setup to complete the existing Oracle Stack "oci-hpc" https://github.com/oracle-quickstart/oci-hpc
 
 ## Architecture
 
