@@ -36,6 +36,28 @@ Additionally, it is possible to use the OCI Services from Region 2 in Region 1 a
 It is also possible to peer a third region by setting "Add Region 3" to true.
 This will deploy another VCN in another region with the same network capability as the two others. The peering will be all to all, there for an instance in one region can access the Oracle Services of the three regions.
 
+### Considerations when used with HPC stack (https://github.com/oracle-quickstart/oci-hpc)
+
+It is possible to deploy the HPC stack on top by specifying "use existing network" in the networking options. The initial deployment will only be valid within the current region. It is then possible to adapt the configuration to deploy in the 2nd or 3rd region. 
+
+On the head node, make sure you adapt the following file to match the CIDR's of your other subnets.
+/etc/exports.d/cluster.exports
+/etc/exports.d/home.exports
+
+Once done, you can run the following command for the change to take effect.
+```
+sudo exportfs -ra
+```
+
+In case you deployed a File System Service, you should also adapt the export options from teh OCI Web Console.
+
+Finally, you can add a new queue in /opt/oci-hpc/conf/queues.conf and make sure you adapt the following keys in particular:
+"region: <YourRegion2>"
+"private_subnet: <CIDR_RANGE>"
+"private_subnet_id: ocid..."
+
+Once done, you can execute /opt/oci-hpc/bin/slurm_config.sh
+
 ## Sample code
 
 As a test, you can deploy 1 VM's in the private subnet of each region (a jump VM in a public subnet might be required). From VM1, try to ping the private ip of VM2.
