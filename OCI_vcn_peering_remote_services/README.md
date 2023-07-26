@@ -41,15 +41,16 @@ This will deploy another VCN in another region with the same network capability 
 It is possible to deploy the HPC stack on top by specifying "use existing network" in the networking options. The initial deployment will only be valid within the current region. It is then possible to adapt the configuration to deploy in the 2nd or 3rd region. 
 
 On the head node, make sure you adapt the following file to match the CIDR's of your other subnets.
+```
 /etc/exports.d/cluster.exports
 /etc/exports.d/home.exports
-
+```
 Once done, you can run the following command for the change to take effect.
 ```
 sudo exportfs -ra
 ```
 
-In case you deployed a File System Service, you should also adapt the export options from teh OCI Web Console.
+In case you deployed a File System Service, you should also adapt the export options from the OCI Web Console.
 
 Finally, you can add a new queue in /opt/oci-hpc/conf/queues.conf and make sure you adapt the following keys in particular:
 "region: <YourRegion2>"
