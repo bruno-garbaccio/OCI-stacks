@@ -1,0 +1,182 @@
+<!-- Mobile only header and page title -->
+<header role="banner" class="oj-sm-flex-initial vb-web-applayout-header oj-md-hide">
+  <div role="image" class="vb-web-applayout-header-image-stripe"></div>
+  <div class="oj-flex-bar oj-sm-align-items-center vb-web-applayout-header-content">
+    <!-- Navigator toggle button will render only if we have a drawer -->
+    <oj-bind-if test="[[ document.querySelector('oj-vb-fragment[name=\'shell-drawer\']') ]]">
+      <div class="oj-flex-bar">
+        <oj-button on-oj-action="[[$listeners.toggleDrawer]]" chroming="borderless"
+                   display="icons">
+          <span slot="startIcon" class="oj-ux-ico-menu"></span>
+          <span><oj-bind-text value="[[$application.translations.app.app_title_navigation_drawer]]"></oj-bind-text></span>
+        </oj-button>
+      </div>
+    </oj-bind-if>
+    <!-- Page specific title and actions with overflow menu displayed -->
+    <div class="oj-sm-margin-2x-horizontal oj-sm-align-items-center oj-md-hide oj-sm-flex-1">
+      <div class="vb-content-header oj-flex oj-sm-flex-items-initial oj-sm-align-items-center">
+        <div class="oj-flex-item">
+          <div class="oj-typography-body-lg oj-typography-semi-bold">
+            <oj-bind-text value="main"></oj-bind-text>
+          </div>
+          <!-- Add Page specific actions etc -->
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+<!-- Page specific title and actions for desktop formfactor -->
+<div class="oj-sm-only-hide oj-sm-padding-4x">
+    <!-- Add Page specific actions etc -->
+  </div>
+
+<div class="oj-flex">
+  <oj-collapsible class="oj-flex-item oj-sm-12 oj-md-12 oj-header-border"
+    id="submietJobCollapsible" expanded="false">
+    <oj-label slot="header" class="oj-typography-bold oj-typography-heading-md">Submit Job</oj-label>
+    <div class="oj-flex">
+      <oj-select-single label-hint="Partition" id="sjParttitionInput" placeholder="Partition" item-text="name"
+        class="oj-flex-item oj-sm-12 oj-md-2" data="[[ $variables.BackendGet_featurestADPVariable ]]"
+        on-value-item-changed="[[$listeners.sjParttitionInputValueItem]]"
+        value-item="{{ $variables.selectedPartition }}"></oj-select-single>
+      <div class="oj-flex-item oj-sm-12 oj-md-1"></div>
+      <oj-select-single label-hint="Node Type" class="oj-flex-item oj-sm-12 oj-md-2" item-text="name"
+        id="sjNodeTypeInput" data="[[ $variables.nodeTypesArrayVariable ]]"
+        on-value-item-changed="[[$listeners.sjNodeTypeInputValueItem]]" disabled="[[ !$variables.selectedPartition]]"></oj-select-single>
+      <div class="oj-flex-item oj-sm-12 oj-md-1"></div>
+      <oj-input-text label-hint="Shape" id="sjShapeInput" placeholder="Shape" disabled="true"
+        value="{{ $variables.ShapeVariable }}" class="oj-flex-item oj-sm-12 oj-md-3"></oj-input-text>
+    </div>
+    <div class="oj-flex">
+      <div class="oj-flex-item oj-sm-12 oj-md-3"></div>
+      <div class="oj-divider-top oj-flex-item oj-sm-12 oj-md-6"></div>
+    </div>
+    <div class="oj-flex">
+      <oj-input-text label-hint="Job Name" id="sjJobName" placeholder="Job Name" class="oj-flex-item oj-sm-12 oj-md-2"
+        value="{{ $variables.sjJobNameVariable }}" required="true"></oj-input-text>
+      <div class="oj-flex-item oj-sm-12 oj-md-1"></div>
+      <oj-input-number label-hint="Nodes" class="oj-flex-item oj-sm-12 oj-md-2" id="sjNodesNumberInput" min="1" max="10"
+        step="1" required="true" value="{{ $variables.sjNodesNumberVariable }}"></oj-input-number>
+      <div class="oj-flex-item oj-sm-12 oj-md-1"></div>
+      <oj-input-text label-hint="CPUs" value="{{ $variables.CpusVariable }}" id="sjCpusInput" placeholder="CPUs"
+        disabled="true" class="oj-flex-item oj-sm-12 oj-md-1"></oj-input-text>
+      <div class="oj-flex-item oj-sm-12 oj-md-1"></div>
+      <oj-input-text label-hint="GPUs" placeholder="GPUs" disabled="true" id="sjGPUsInput"
+        value="{{ $variables.GpusVariable }}" class="oj-flex-item oj-sm-12 oj-md-1"></oj-input-text>
+    </div>
+    <div class="oj-flex">
+      <div class="oj-flex-item oj-sm-12 oj-md-1"></div>
+      <div class="oj-divider-top oj-flex-item oj-sm-12 oj-md-6"></div>
+    </div>
+    <div class="oj-flex">
+      <div class="oj-flex-item oj-sm-12 oj-md-4"></div>
+      <div class="oj-divider-top oj-flex-item oj-sm-12 oj-md-6 oj-divider-margin"></div>
+    </div>
+    <div class="oj-flex">
+      <oj-file-picker id="filePickerInput" on-oj-select="[[$listeners.filePickerInputSelect]]"
+        class="oj-flex-item oj-sm-12 oj-md-5"></oj-file-picker>
+      <div class="oj-flex oj-flex-item oj-sm-12 oj-md-6">
+        <div class="oj-flex-item oj-sm-12 oj-md-1"></div>
+        <oj-table scroll-policy="loadMoreOnScroll" data="[[ $variables.FileADPVariable ]]"
+          columns='[{"headerText":"name","field":"name"},{"headerText":"size","field":"size"}]'
+          class="oj-flex-item oj-sm-12 oj-md-7"></oj-table>
+        <div class="oj-flex-item oj-sm-12 oj-md-1"></div>
+        <div class="oj-flex-item oj-sm-12 oj-md-3">
+          <oj-button label="Submit Job" id="submitJobsButton" class="oj-button-lg" chroming="danger"
+            on-oj-action="[[$listeners.submitJobsButtonAction]]"></oj-button>
+        </div>
+      </div>
+    </div>
+  </oj-collapsible>
+</div>
+
+<div class="oj-flex">
+  <div class="oj-flex-item oj-sm-12 oj-md-10"></div>
+  <div class="oj-flex-item oj-sm-12 oj-md-1">
+    </div>
+</div>
+<div class="oj-flex oj-sm-flex-wrap-nowrap">
+  <oj-input-date label-hint="Since Date" class="oj-flex-item oj-sm-flex-initial oj-md-2"
+    value="{{ $variables.BackendList_jobsRequestVariable.searchdate }}" id="dateSearch"></oj-input-date>
+  
+  <div class="oj-flex-item oj-sm-6 oj-md-1"></div>
+    <oj-button label="List Jobs" id="listJobsButton" on-oj-action="[[$listeners.listJobsButtonAction]]"
+      chroming="solid" class="oj-button-lg oj-flex-item oj-sm-12 oj-md-2 oj-bg-brand-30">
+                  <span slot="startIcon" class="oj-ux-ico-restart"></span>
+    </oj-button>
+  <div class="oj-flex-item oj-sm-6 oj-md-1"></div>
+
+  <oj-switch label-hint="Show All" id="switchShowAll" on-value-changed="[[$listeners.switchShowAllValue]]"
+    value="{{ $variables.showAllVariable }}" class="oj-flex-item oj-sm-12 oj-md-1"></oj-switch>
+
+                   <oj-button display="icons" on-oj-action="[[$listeners.buttonAction2]]" class="oj-flex-bar-end">
+                  <span  slot="startIcon" class="oj-ux-ico-settings"></span>
+
+                </oj-button>
+</div>
+<div class="oj-flex">
+  <oj-switcher value="one" class="oj-flex-item oj-sm-12 oj-md-12">
+    <div slot="one" id="div-488558771-1">
+    </div>
+    <div slot="two" id="div-488558771-2">
+      <div class="oj-flex"></div>
+    </div>
+    <div slot="three" id="div-488558771-3">
+      <div class="oj-flex"></div>
+    </div>
+  </oj-switcher>
+</div>
+<div class="oj-flex">
+  <oj-table scroll-policy="loadMoreOnScroll" class="oj-flex-item oj-sm-12 oj-md-12" id="tableListJob"
+    selection-mode.row="single" data="[[ $variables.BackendList_jobsADPVariable ]]"
+    columns='[  {    "headerText": "features",    "field": "features"  },  {    "headerText": "jobid",    "field": "jobid"  },  {    "headerText": "nodelist",    "field": "nodelist"  },  {    "headerText": "num_nodes",    "field": "num_nodes"  },  {    "headerText": "reason",    "field": "reason"  },  {    "headerText": "name",    "field": "name"  },  {    "headerText": "partition",    "field": "partition"  },  {    "headerText": "state",    "field": "state"  },  {    "headerText": "time",    "field": "time"  },  {    "headerText": "working_directory",    "field": "working_directory"  },  {    "headerText": "Cancel Job",    "template": "customTemplate",    "width": 70  },  {    "headerText": "Log",    "template": "logTemplate",    "width": 70  }]'>
+    <template slot="customTemplate">
+      <span class="oj-ux-ico-cancel"
+        :hidden='[[ !($current.row.state === "RUNNING") && !($current.row.state === "PENDING") ]]'
+        on-click="[[$listeners.iconClick]]"></span>
+    </template>
+    <template slot="logTemplate">
+      <span class="oj-ux-ico-attach-file"
+        :hidden='[[ ($current.row.state === "RUNNING") || ($current.row.state === "PENDING") ]]' id="iconLogFile"
+        on-click="[[$listeners.iconLogFileClick]]"></span>
+    </template>
+  </oj-table>
+</div>
+<oj-dialog dialog-title='[[ "Log File for Job Id " + $variables.selectedJobId ]]' id="dialogLogFileContent">
+  <div slot="body">
+    <div class="oj-flex">
+      <div clas="oj-flex-item oj-sm-12 oj-md-20" class="oj-sm-flex-1">
+      <oj-text-area class="oj-flex-item oj-form-control-full-width" id="textareaLogContent"
+        value="{{ $variables.LogFileContentVariable }}" rows="10"></oj-text-area>
+</div>
+      
+    </div>
+  </div>
+  <div slot="footer">
+    <oj-button on-oj-action="[[$listeners.buttonAction]]">Close</oj-button>
+  </div>
+</oj-dialog>
+
+  <oj-dialog dialog-title="Slurm Settings" id="dialogSettings">
+    <div slot="body">
+      <div class="oj-flex">
+      <div class="oj-flex-item oj-sm-20 oj-md-20">
+          <oj-form-layout>
+              <oj-input-text label-hint="User" id="settingsUserInput" placeholder="user"
+    value="{{ $variables.BackendList_jobsRequestVariable.user }}"></oj-input-text>
+  <oj-input-text label-hint="Public IP" id="settingsPublicIpInput"
+    placeholder="Public IP" value="{{ $variables.BackendList_jobsRequestVariable.public_ip }}"></oj-input-text>
+  <oj-input-text label-hint="Secret OCID" id="settingsSecretOcidInput"
+    placeholder="Secret OCID" value="{{ $variables.BackendList_jobsRequestVariable.secret_ocid }}"></oj-input-text>
+  <oj-input-text label-hint="Path Configuration File" id="settingsSelectedPathConfigFile"
+    placeholder="Path Config. File" value="{{ $variables.pathConfigFile }}"></oj-input-text>
+            
+          </oj-form-layout>
+      </div>
+        
+      </div>
+    </div>
+    <div slot="footer">
+      <oj-button on-oj-action="[[$listeners.buttonAction3]]">Save</oj-button>
+    </div>
+  </oj-dialog>

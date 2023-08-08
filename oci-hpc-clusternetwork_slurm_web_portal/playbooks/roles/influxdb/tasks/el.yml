@@ -1,0 +1,7 @@
+---
+- name: install influxdb
+  include_tasks: el_install_influxdb.yml
+
+- name: configure influxdb on bastion
+  include_tasks: config_influxdb.yml
+  when: "'bastion' in group_names"

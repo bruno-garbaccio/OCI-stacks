@@ -1,0 +1,93 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "BackendGetLog",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "vb-catalog://backends/API_GATEWAY_BACKEND",
+            "description": "API GATEWAY BACKEND"
+        }
+    ],
+    "paths": {
+        "/get_log": {
+            "post": {
+                "operationId": "get_log",
+                "responses": {
+                    "default": {
+                        "description": "Response for default",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostGet_logResponse"
+                                },
+                                "examples": {
+                                    "vb": {
+                                        "summary": "Example stored by VB User",
+                                        "externalValue": "./examples/get_log/response_default_application_json_vb.json"
+                                    }
+                                }
+                            }
+                        }
+                    }
+               },
+                "x-vb": {
+                    "actionHint": "getMany"
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostGet_logRequest"
+                            },
+                            "examples": {
+                                "vb": {
+                                    "externalValue": "./examples/get_log/request_application_json_vb.json"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "PostGet_logRequest": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "type": "string"
+                    },
+                    "public_ip": {
+                        "type": "string"
+                    },
+                    "secret_ocid": {
+                        "type": "string"
+                    },
+                    "selected_function": {
+                        "type": "string"
+                    },
+                    "jobid": {
+                        "type": "string"
+                    },
+                    "working_directory": {
+                        "type": "string"
+                    }
+                }
+            },
+            "PostGet_logResponse": {
+                "type": "object",
+                "properties": {
+                    "jobid": {
+                        "type": "string"
+                    },
+                    "log": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

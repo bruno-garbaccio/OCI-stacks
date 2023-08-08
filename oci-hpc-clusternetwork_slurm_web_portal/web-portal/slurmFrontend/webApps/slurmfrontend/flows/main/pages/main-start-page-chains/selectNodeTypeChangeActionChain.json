@@ -1,0 +1,43 @@
+{
+  "description": "",
+  "root": "assignVariablesCpusVariable",
+  "actions": {
+    "assignVariablesCpusVariable": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.GpusVariable": {
+          "source": "[[ $variables.data.nb_gpus ]]",
+          "reset": "empty"
+        },
+        "$page.variables.ShapeVariable": {
+          "source": "[[ $variables.data.shape ]]",
+          "reset": "empty"
+        },
+        "$page.variables.CpusVariable": {
+          "source": "[[ $variables.data.nb_cpus ]]",
+          "reset": "empty"
+        },
+        "$page.variables.selectedConstraint": {
+          "source": "{{ $variables.data.name }}"
+        }
+      }
+    }
+  },
+  "variables": {
+    "key": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    },
+    "data": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    },
+    "metadata": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    }
+  }
+}

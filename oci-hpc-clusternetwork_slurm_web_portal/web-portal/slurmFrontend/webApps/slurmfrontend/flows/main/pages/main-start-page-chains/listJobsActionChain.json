@@ -1,0 +1,52 @@
+{
+  "description": "",
+  "root": "callRestListJobs",
+  "actions": {
+    "fireNotification": {
+      "module": "vb/action/builtin/fireNotificationEventAction",
+      "parameters": {
+        "target": "leaf",
+        "summary": "[[ $chain.results.callRestListJobs.message.summary ]]",
+        "type": "error",
+        "displayMode": "persist"
+      }
+    },
+    "assignVariablesPostListJobsV2ResponseADPVariable": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.allJobsArrayVariable": {
+          "source": "{{ $chain.results.callRestListJobs.body }}"
+        },
+        "$page.variables.showAllVariable": {
+          "reset": "empty",
+          "source": false
+        },
+        "$page.variables.BackendList_jobsADPVariable": {
+          "source": {
+            "data": "{{ $functions.showRunningAndPending($chain.results.callRestListJobs.body) }}"
+          },
+          "reset": "none",
+          "auto": "always",
+          "mapping": {
+            "$target.data": {
+              "source": "$source.data",
+              "reset": "empty"
+            }
+          }
+        }
+      }
+    },
+    "callRestListJobs": {
+      "module": "vb/action/builtin/restAction",
+      "parameters": {
+        "endpoint": "backendListJobs/listJobs",
+        "body": "{{ $page.variables.BackendList_jobsRequestVariable }}"
+      },
+      "outcomes": {
+        "failure": "fireNotification",
+        "success": "assignVariablesPostListJobsV2ResponseADPVariable"
+      }
+    }
+  },
+  "variables": {}
+}

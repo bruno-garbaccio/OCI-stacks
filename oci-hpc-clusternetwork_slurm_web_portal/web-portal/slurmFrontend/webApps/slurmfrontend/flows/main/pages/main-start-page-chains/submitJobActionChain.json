@@ -1,0 +1,149 @@
+{
+  "description": "",
+  "root": "ifMissingFile",
+  "actions": {
+
+    "callComponentListJobsButtonClick": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('listJobsButton') }}",
+        "method": "click"
+      },
+      "outcomes": {
+        "success": "fireNotificationSuccessSubmit"
+      }
+    },
+    "fireNotificationMissingPartition": {
+      "module": "vb/action/builtin/fireNotificationEventAction",
+      "parameters": {
+        "target": "leaf",
+        "summary": "Missing Partition",
+        "message": "Please select a partition before submitting",
+        "displayMode": "transient"
+      }
+    },
+    "fireNotificationMissingFile": {
+      "module": "vb/action/builtin/fireNotificationEventAction",
+      "parameters": {
+        "target": "leaf",
+        "summary": "Missing batch file",
+        "message": "Please import a batch file before submitting",
+        "displayMode": "transient"
+      }
+    },
+    "fireNotificationSuccessSubmit": {
+      "module": "vb/action/builtin/fireNotificationEventAction",
+      "parameters": {
+        "target": "leaf",
+        "type": "confirmation",
+        "summary": "[[ $chain.results.callRestSubmitJob.body.msg ]]",
+        "displayMode": "transient"
+      }
+    },
+    "fireNotificationErrorSubmit": {
+      "module": "vb/action/builtin/fireNotificationEventAction",
+      "parameters": {
+        "target": "leaf",
+        "summary": "[[ $chain.results.callRestSubmitJob.message.summary ]]",
+        "type": "error",
+        "displayMode": "persist"
+      }
+    },
+    "ifMissingFile": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[  !$page.variables.base64File || $page.variables.base64File.length === 0 ]]"
+      },
+      "outcomes": {
+        "false": "ifMissingPartition",
+        "true": "fireNotificationMissingFile"
+      }
+    },
+    "ifMissingPartition": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ !$page.variables.partitionVariable || $page.variables.partitionVariable.length === 0 ]]"
+      },
+      "outcomes": {
+        "true": "fireNotificationMissingPartition",
+        "false": "ifMissingNodeType"
+      }
+    },
+    "ifMissingNodeType": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ ! $page.variables.selectedConstraint || $page.variables.selectedConstraint.length === 0 ]]"
+      },
+      "outcomes": {
+        "true": "fireNotificationMissingNodeType",
+        "false": "assignVariablesBackendSubmitJobRequestVariable"
+      }
+    },
+    "fireNotificationMissingNodeType": {
+      "module": "vb/action/builtin/fireNotificationEventAction",
+      "parameters": {
+        "target": "leaf",
+        "message": "Please select a Node Type before submitting",
+        "summary": "Missing Node Type",
+        "displayMode": "transient"
+      }
+    },
+    "assignVariablesBase64File": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.base64File": {
+          "reset": "empty"
+        },
+        "$page.variables.FileADPVariable": {
+          "reset": "empty"
+        }
+      },
+      "outcomes": {
+        "success": "callComponentListJobsButtonClick"
+      }
+    },
+    "assignVariablesBackendSubmitJobRequestVariable": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.BackendSubmit_jobRequestVariable": {
+          "source": {
+            "base64_message": "{{ $page.variables.base64File }}",
+            "nb_cpus": "{{ $page.variables.CpusVariable }}",
+            "partition": "{{ $page.variables.partitionVariable }}",
+            "public_ip": "{{ $page.variables.BackendList_jobsRequestVariable.public_ip }}",
+            "secret_ocid": "{{ $page.variables.BackendList_jobsRequestVariable.secret_ocid }}",
+            "user": "{{ $page.variables.BackendList_jobsRequestVariable.user }}",
+            "selected_function": "submit_job",
+            "jobname": "{{ $page.variables.sjJobNameVariable }}",
+            "nb_nodes": "{{ $page.variables.sjNodesNumberVariable }}",
+            "constraint": "{{ $page.variables.selectedConstraint }}",
+            "nb_gpus": "{{ $page.variables.GpusVariable }}"
+          },
+          "reset": "none",
+          "auto": "always",
+          "mapping": {
+            "$target.selected_function": {
+              "source": "$source.selected_function",
+              "reset": "empty"
+            }
+          }
+        }
+      },
+      "outcomes": {
+        "success": "callRestSubmitJob"
+      }
+    },
+    "callRestSubmitJob": {
+      "module": "vb/action/builtin/restAction",
+      "parameters": {
+        "endpoint": "BackendSubmitJob/submit_job",
+        "body": "{{ $page.variables.BackendSubmit_jobRequestVariable }}"
+      },
+      "outcomes": {
+        "failure": "fireNotificationErrorSubmit",
+        "success": "assignVariablesBase64File"
+      }
+    }
+  },
+  "variables": {}
+}

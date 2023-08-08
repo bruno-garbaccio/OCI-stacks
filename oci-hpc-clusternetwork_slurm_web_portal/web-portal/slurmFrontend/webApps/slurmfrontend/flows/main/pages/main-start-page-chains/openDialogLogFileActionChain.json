@@ -1,0 +1,111 @@
+{
+  "description": "",
+  "root": "assignVariableJobId",
+  "actions": {
+    "callComponentDialogLogFileContentOpen": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('dialogLogFileContent') }}",
+        "method": "open"
+      }
+    },
+    "assignVariableJobId": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.selectedJobId": {
+          "source": "{{ $variables.current.item.data.jobid }}"
+        },
+        "$page.variables.BackendGet_logRequestVariable": {
+          "source": {
+            "jobid": "{{ $variables.current.item.data.jobid }}",
+            "public_ip": "{{ $page.variables.BackendList_jobsRequestVariable.public_ip }}",
+            "secret_ocid": "{{ $page.variables.BackendList_jobsRequestVariable.secret_ocid }}",
+            "user": "{{ $page.variables.BackendList_jobsRequestVariable.user }}",
+            "selected_function": "get_log",
+            "working_directory": "{{ $variables.current.item.data.working_directory }}"
+          },
+          "reset": "none",
+          "auto": "always",
+          "mapping": {
+            "$target.jobid": {
+              "source": "$source.jobid",
+              "reset": "empty"
+            },
+            "$target.public_ip": {
+              "source": "$source.public_ip",
+              "reset": "empty"
+            },
+            "$target.selected_function": {
+              "source": "$source.selected_function",
+              "reset": "empty"
+            },
+            "$target.user": {
+              "source": "$source.user",
+              "reset": "empty"
+            },
+            "$target.secret_ocid": {
+              "source": "$source.secret_ocid",
+              "reset": "empty"
+            },
+            "$target.working_directory": {
+              "source": "$source.working_directory",
+              "reset": "empty"
+            }
+          }
+        }
+      },
+      "outcomes": {
+        "success": "callRestGetLog"
+      }
+    },
+    "fireNotification": {
+      "module": "vb/action/builtin/fireNotificationEventAction",
+      "parameters": {
+        "target": "leaf",
+        "summary": "[[ $chain.results.callRestGetLog.message.summary ]]",
+        "type": "error",
+        "displayMode": "persist"
+      }
+    },
+    "assignVariablesLogFileContentVariable": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.LogFileContentVariable": {
+          "source": "{{ atob($chain.results.callRestGetLog.body.log) }}",
+          "reset": "empty"
+        }
+      },
+      "outcomes": {
+        "success": "callComponentDialogLogFileContentOpen"
+      }
+    },
+    "callRestGetLog": {
+      "module": "vb/action/builtin/restAction",
+      "parameters": {
+        "endpoint": "BackendGetLog/get_log",
+        "body": "{{ $page.variables.BackendGet_logRequestVariable }}"
+      },
+      "outcomes": {
+        "failure": "fireNotification",
+        "success": "assignVariablesLogFileContentVariable"
+      }
+    }
+  },
+  "variables": {
+    "key": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    },
+    "index": {
+      "required": true,
+      "type": "number",
+      "input": "fromCaller"
+    },
+    "current": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    }
+  }
+}

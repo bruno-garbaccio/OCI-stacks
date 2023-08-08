@@ -1,0 +1,93 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "BackendCancelJob",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "vb-catalog://backends/API_GATEWAY_BACKEND",
+            "description": "API GATEWAY BACKEND"
+        }
+    ],
+    "paths": {
+        "/cancel_job": {
+            "post": {
+                "operationId": "cancel_job",
+                "responses": {
+                    "default": {
+                        "description": "Response for default",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostCancel_jobResponse"
+                                },
+                                "examples": {
+                                    "vb": {
+                                        "summary": "Example stored by VB User",
+                                        "externalValue": "./examples/cancel_job/response_default_application_json_vb.json"
+                                    }
+                                }
+                            }
+                        }
+                    }
+               },
+                "x-vb": {
+                    "actionHint": "getMany"
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostCancel_jobRequest"
+                            },
+                            "examples": {
+                                "vb": {
+                                    "externalValue": "./examples/cancel_job/request_application_json_vb.json"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "PostCancel_jobRequest": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "type": "string"
+                    },
+                    "public_ip": {
+                        "type": "string"
+                    },
+                    "secret_ocid": {
+                        "type": "string"
+                    },
+                    "selected_function": {
+                        "type": "string"
+                    },
+                    "jobid_list": {
+                        "type": "string"
+                    }
+                }
+            },
+            "PostCancel_jobResponse": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "jobid": {
+                            "type": "string"
+                        },
+                        "scancel": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

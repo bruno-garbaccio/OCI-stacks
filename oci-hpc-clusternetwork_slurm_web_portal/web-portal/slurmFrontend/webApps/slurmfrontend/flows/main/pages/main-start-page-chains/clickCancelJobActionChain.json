@@ -1,0 +1,122 @@
+{
+  "description": "",
+  "root": "assignVariablesRowToCancel",
+  "actions": {
+    "assignVariablesRowToCancel": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.rowToCancel": {
+          "source": {
+            "rowKey": "{{ $variables.key }}",
+            "rowId": "{{ $variables.index }}",
+            "jobToCancel": "{{ $variables.current.item.data.jobid }}"
+          },
+          "reset": "none",
+          "auto": "always",
+          "mapping": {
+            "$target.rowId": {
+              "source": "$source.rowId",
+              "reset": "empty"
+            },
+            "$target.jobToCancel": {
+              "source": "$source.jobToCancel",
+              "reset": "empty"
+            }
+          }
+        },
+        "$page.variables.BackendCancel_jobRequestVariable": {
+          "source": {
+            "jobid_list": "{{ $variables.current.item.data.jobid }}",
+            "public_ip": "{{ $page.variables.BackendList_jobsRequestVariable.public_ip }}",
+            "secret_ocid": "{{ $page.variables.BackendList_jobsRequestVariable.secret_ocid }}",
+            "user": "{{ $page.variables.BackendList_jobsRequestVariable.user }}",
+            "selected_function": "cancel_job"
+          },
+          "reset": "none",
+          "auto": "always",
+          "mapping": {
+            "$target.jobid_list": {
+              "source": "$source.jobid_list",
+              "reset": "empty"
+            },
+            "$target.selected_function": {
+              "source": "$source.selected_function",
+              "reset": "empty"
+            },
+            "$target.public_ip": {
+              "source": "$source.public_ip",
+              "reset": "empty"
+            },
+            "$target.secret_ocid": {
+              "source": "$source.secret_ocid",
+              "reset": "empty"
+            },
+            "$target.user": {
+              "source": "$source.user",
+              "reset": "empty"
+            }
+          }
+        }
+      },
+      "outcomes": {
+        "success": "callRestCancelJob"
+      }
+    },
+    "fireNotification": {
+      "module": "vb/action/builtin/fireNotificationEventAction",
+      "parameters": {
+        "target": "leaf",
+        "summary": "[[ $chain.results.callRestCancelJob.message.summary ]]",
+        "type": "error",
+        "displayMode": "persist"
+      }
+    },
+    "fireNotification2": {
+      "module": "vb/action/builtin/fireNotificationEventAction",
+      "parameters": {
+        "target": "leaf",
+        "type": "confirmation",
+        "summary": "[[ $chain.results.callRestCancelJob.body[0].scancel ]]",
+        "displayMode": "transient"
+      }
+    },
+    "callComponentListJobsButtonClick": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('listJobsButton') }}",
+        "method": "click"
+      },
+      "outcomes": {
+        "success": "fireNotification2"
+      }
+    },
+    "callRestCancelJob": {
+      "module": "vb/action/builtin/restAction",
+      "parameters": {
+        "endpoint": "BackendCancelJob/cancel_job",
+        "body": "{{ $page.variables.BackendCancel_jobRequestVariable }}"
+      },
+      "outcomes": {
+        "failure": "fireNotification",
+        "success": "callComponentListJobsButtonClick"
+      }
+    }
+  },
+  "variables": {
+    "key": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    },
+    "index": {
+      "required": true,
+      "type": "number",
+      "input": "fromCaller"
+    },
+    "current": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    }
+  }
+}

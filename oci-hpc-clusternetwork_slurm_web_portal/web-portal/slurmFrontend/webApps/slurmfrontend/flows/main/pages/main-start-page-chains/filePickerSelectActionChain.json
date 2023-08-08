@@ -1,0 +1,65 @@
+{
+  "description": "",
+  "root": "callFunctionConvertbase64",
+  "actions": {
+    "assignVariablesBase64File": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.base64File": {
+          "source": "{{ $chain.results.callFunctionConvertbase64 }}",
+          "reset": "empty"
+        }
+      },
+      "outcomes": {
+        "success": "callFunctionParseFiles"
+      }
+    },
+    "callFunctionConvertbase64": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $functions ]]",
+        "functionName": "convertbase64",
+        "params": [
+          "{{ $variables.files[0] }}"
+        ],
+        "returnType": "string"
+      },
+      "outcomes": {
+        "success": "assignVariablesBase64File"
+      }
+    },
+    "callFunctionParseFiles": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $functions ]]",
+        "functionName": "parseFiles",
+        "params": [
+          "{{ $variables.files }}"
+        ]
+      },
+      "outcomes": {
+        "success": "assignVariablesFileADPVariable"
+      }
+    },
+    "assignVariablesFileADPVariable": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.FileADPVariable": {
+          "source": {
+            "data": "{{ $chain.results.callFunctionParseFiles }}"
+          },
+          "reset": "empty",
+          "auto": "always"
+        }
+      }
+    }
+  },
+  "variables": {
+    "files": {
+      "required": true,
+      "type": "object[]",
+      "input": "fromCaller"
+    }
+  },
+  "returnType": "string"
+}

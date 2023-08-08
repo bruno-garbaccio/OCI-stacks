@@ -1,0 +1,24 @@
+{
+    "backends": {
+        "API_GATEWAY_BACKEND": {
+            "description": "OCI API Gateway Backend",
+            "servers": [
+                {
+                    "url": "{APIGWURL}",
+                    "description": "Default Server",
+                    "variables": {
+                        "APIGWURL": {
+                            "default": "https://pmcxgzkma7wn7z7yh57tgo46na.apigateway.eu-frankfurt-1.oci.customer-oci.com/v1/slurm"
+                        }
+                    },
+                    "x-vb": {
+                        "profiles": [
+                            "base_configuration"
+                        ],
+                        "anonymousAccess": true
+                    }
+                }
+            ]
+        }
+      }
+}

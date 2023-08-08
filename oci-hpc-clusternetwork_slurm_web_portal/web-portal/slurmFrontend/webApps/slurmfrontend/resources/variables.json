@@ -1,0 +1,7 @@
+{
+        "user": "opc",
+        "public_ip": "132.226.205.26",
+        "secret_ocid": "ocid1.vaultsecret.oc1.eu-frankfurt-1.amaaaaaaldij5aia6xztjv7azubjwrc7qhtc2kqhach7zftnne2i2eh6vteq",
+        "path_conf_file": "/opt/oci-hpc/conf/queues.conf",
+        "searchdate": "2023-05-24"
+}

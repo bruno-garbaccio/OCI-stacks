@@ -1,0 +1,185 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "BackendGetFeatures",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "vb-catalog://backends/API_GATEWAY_BACKEND",
+            "description": "API GATEWAY BACKEND"
+        }
+    ],
+    "paths": {
+        "/get_features": {
+            "post": {
+                "operationId": "get_features",
+                "responses": {
+                    "default": {
+                        "description": "Response for default",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostGet_featuresResponse"
+                                },
+                                "examples": {
+                                    "vb": {
+                                        "summary": "Example stored by VB User",
+                                        "externalValue": "./examples/get_features/response_default_application_json_vb.json"
+                                    }
+                                }
+                            }
+                        }
+                    }
+               },
+                "x-vb": {
+                    "actionHint": "getMany"
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostGet_featuresRequest"
+                            },
+                            "examples": {
+                                "vb": {
+                                    "externalValue": "./examples/get_features/request_application_json_vb.json"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "PostGet_featuresRequest": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "type": "string"
+                    },
+                    "public_ip": {
+                        "type": "string"
+                    },
+                    "secret_ocid": {
+                        "type": "string"
+                    },
+                    "selected_function": {
+                        "type": "string"
+                    },
+                    "path_conf_file": {
+                        "type": "string"
+                    }
+                }
+            },
+            "PostGet_featuresResponse": {
+                "type": "object",
+                "properties": {
+                    "queues": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "default": {
+                                    "type": "boolean"
+                                },
+                                "instance_types": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "object",
+                                        "properties": {
+                                            "name": {
+                                                "type": "string"
+                                            },
+                                            "default": {
+                                                "type": "boolean"
+                                            },
+                                            "shape": {
+                                                "type": "string"
+                                            },
+                                            "instance_keyword": {
+                                                "type": "string"
+                                            },
+                                            "permanent": {
+                                                "type": "boolean"
+                                            },
+                                            "cluster_network": {
+                                                "type": "boolean"
+                                            },
+                                            "max_number_nodes": {
+                                                "type": "integer"
+                                            },
+                                            "max_cluster_size": {
+                                                "type": "integer"
+                                            },
+                                            "max_cluster_count": {
+                                                "type": "integer"
+                                            },
+                                            "region": {
+                                                "type": "string"
+                                            },
+                                            "ad": {
+                                                "type": "string"
+                                            },
+                                            "private_subnet": {
+                                                "type": "string"
+                                            },
+                                            "private_subnet_id": {
+                                                "type": "string"
+                                            },
+                                            "image": {
+                                                "type": "string"
+                                            },
+                                            "targetCompartment": {
+                                                "type": "string"
+                                            },
+                                            "boot_volume_size": {
+                                                "type": "integer"
+                                            },
+                                            "use_marketplace_image": {
+                                                "type": "boolean"
+                                            },
+                                            "use_old_marketplace_image": {
+                                                "type": "boolean"
+                                            },
+                                            "instance_pool_memory": {
+                                                "type": "integer"
+                                            },
+                                            "instance_pool_custom_memory": {
+                                                "type": "boolean"
+                                            },
+                                            "marketplace_listing": {
+                                                "type": "string"
+                                            },
+                                            "hyperthreading": {
+                                                "type": "boolean"
+                                            },
+                                            "nb_gpus": {
+                                                "type": "string"
+                                            },
+                                            "nb_cpus": {
+                                                "oneOf": [
+                                                    {
+                                                        "type": "integer"
+                                                    },
+                                                    {
+                                                        "type": "string"
+                                                    }
+                                                ]
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

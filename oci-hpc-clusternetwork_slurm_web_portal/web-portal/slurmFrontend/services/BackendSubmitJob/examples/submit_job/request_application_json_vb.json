@@ -1,0 +1,12 @@
+
+{"base64_message":"IyEvYmluL3NoCgpjZCAvbmZzL3NjcmF0Y2gKbWtkaXIgJFNMVVJNX0pPQl9JRApjZCAkU0xVUk1fSk9CX0lECk1BQ0hJTkVGSUxFPSJob3N0ZmlsZSIKCiMgR2VuZXJhdGUgTWFjaGluZWZpbGUgZm9yIG1waSBzdWNoIHRoYXQgaG9zdHMgYXJlIGluIHRoZSBzYW1lCiMgIG9yZGVyIGFzIGlmIHJ1biB2aWEgc3J1bgojCiNzcnVuIC1OJFNMVVJNX05OT0RFUyAtbiRTTFVSTV9OTk9ERVMgIGhvc3RuYW1lICA+ICRNQUNISU5FRklMRQpzY29udHJvbCBzaG93IGhvc3RuYW1lcyAkU0xVUk1fSk9CX05PREVMSVNUID4gJE1BQ0hJTkVGSUxFCnNlZCAtaSAicy8kLzoke1NMVVJNX05UQVNLU19QRVJfTk9ERX0vIiAkTUFDSElORUZJTEUKCmNhdCAkTUFDSElORUZJTEUKIyBSdW4gdXNpbmcgZ2VuZXJhdGVkIE1hY2hpbmUgZmlsZToKc2xlZXAgMTAwMA==",
+"constraint":"a10",
+"jobname":"default_nametest",
+"nb_cpus":"N/A",
+"nb_gpus":"1",
+"nb_nodes":"2",
+"partition": "compute",
+"public_ip":"132.226.205.26",
+"secret_ocid":"ocid1.vaultsecret.oc1.eu-frankfurt-1.amaaaaaaldij5aia6xztjv7azubjwrc7qhtc2kqhach7zftnne2i2eh6vteq",
+"selected_function":"submit_job",
+"user":"opc"}

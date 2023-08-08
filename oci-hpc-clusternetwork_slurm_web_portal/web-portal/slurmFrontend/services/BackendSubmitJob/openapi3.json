@@ -1,0 +1,105 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "BackendSubmitJob",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "vb-catalog://backends/API_GATEWAY_BACKEND",
+            "description": "API GATEWAY BACKEND"
+        }
+    ],
+    "paths": {
+        "/submit_job": {
+            "post": {
+                "operationId": "submit_job",
+                "responses": {
+                    "default": {
+                        "description": "Response for default",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostSubmit_jobResponse"
+                                },
+                                "examples": {
+                                    "vb": {
+                                        "summary": "Example stored by VB User",
+                                        "externalValue": "./examples/submit_job/response_default_application_json_vb.json"
+                                    }
+                                }
+                            }
+                        }
+                    }
+               },
+                "x-vb": {
+                    "actionHint": "getMany"
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostSubmit_jobRequest"
+                            },
+                            "examples": {
+                                "vb": {
+                                    "externalValue": "./examples/submit_job/request_application_json_vb.json"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "PostSubmit_jobRequest": {
+                "type": "object",
+                "properties": {
+                    "base64_message": {
+                        "type": "string"
+                    },
+                    "constraint": {
+                        "type": "string"
+                    },
+                    "jobname": {
+                        "type": "string"
+                    },
+                    "nb_cpus": {
+                        "type": "string"
+                    },
+                    "nb_gpus": {
+                        "type": "string"
+                    },
+                    "nb_nodes": {
+                        "type": "string"
+                    },
+                    "partition": {
+                        "type": "string"
+                    },
+                    "public_ip": {
+                        "type": "string"
+                    },
+                    "secret_ocid": {
+                        "type": "string"
+                    },
+                    "selected_function": {
+                        "type": "string"
+                    },
+                    "user": {
+                        "type": "string"
+                    }
+                }
+            },
+            "PostSubmit_jobResponse": {
+                "type": "object",
+                "properties": {
+                    "msg": {
+                        "type": "string"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,0 +1,411 @@
+{
+  "title": "OCI Slurm Frontend",
+  "description": "",
+  "variables": {
+    "allJobsArrayVariable": {
+      "type": "object[]"
+    },
+    "BackendCancel_jobRequestVariable": {
+      "type": "BackendCancel_jobRequestType"
+    },
+    "BackendGet_featuresRequestVariable": {
+      "type": "BackendGet_featuresRequestType"
+    },
+    "BackendGet_featurestADPVariable": {
+      "type": "vb/ArrayDataProvider2",
+      "defaultValue": {
+        "itemType": "BackendGet_featuresReqsponseType",
+        "keyAttributes": "name"
+      }
+    },
+    "BackendGet_logRequestVariable": {
+      "type": "BackendGet_logRequestType"
+    },
+    "BackendList_jobsADPVariable": {
+      "type": "vb/ArrayDataProvider2",
+      "defaultValue": {
+        "itemType": "BackendList_jobsResponseType",
+        "keyAttributes": "jobid"
+      }
+    },
+    "BackendList_jobsRequestVariable": {
+      "type": "BackendList_jobsRequestType"
+    },
+    "BackendSubmit_jobRequestVariable": {
+      "type": "BackendSubmit_jobRequestType"
+    },
+    "base64File": {
+      "type": "string"
+    },
+    "CpusVariable": {
+      "type": "string"
+    },
+    "FileADPVariable": {
+      "type": "vb/ArrayDataProvider2",
+      "defaultValue": {
+        "itemType": "FileType",
+        "keyAttributes": "name"
+      }
+    },
+    "GpusVariable": {
+      "type": "string"
+    },
+    "LogFileContentVariable": {
+      "type": "string"
+    },
+    "nodeTypesArrayVariable": {
+      "type": "vb/ArrayDataProvider2",
+      "defaultValue": {
+        "itemType": "instanceTypeTypes",
+        "keyAttributes": "name"
+      }
+    },
+    "partitionVariable": {
+      "type": "string"
+    },
+    "pathConfigFile": {
+      "type": "string",
+      "defaultValue": "/opt/oci-hpc/conf/queues.conf"
+    },
+    "rowToCancel": {
+      "type": {
+        "jobToCancel": "string",
+        "rowId": "number",
+        "rowKey": "number"
+      }
+    },
+    "selectedConstraint": {
+      "type": "string"
+    },
+    "selectedJobId": {
+      "type": "string"
+    },
+    "selectedPartition": {
+      "type": "string"
+    },
+    "ShapeVariable": {
+      "type": "string"
+    },
+    "showAllVariable": {
+      "type": "boolean"
+    },
+    "sjJobNameVariable": {
+      "type": "string",
+      "defaultValue": "default_name"
+    },
+    "sjNodesNumberVariable": {
+      "type": "number",
+      "defaultValue": 1
+    }
+
+  },
+  "metadata": {},
+  "types": {
+      "@decorators.instanceTypeTypes": {
+        "endpoint": "postGet_features",
+        "service": "slurmGetFeatures",
+        "path": "response-_-queues[0]-_-instance_types[0]"
+      },
+    "@decorators.BackendCancel_jobRequestType": {
+      "endpoint": "cancel_job",
+      "service": "BackendCancelJob",
+      "path": "request"
+    },
+    "@decorators.BackendGet_featuresReqsponseType": {
+      "endpoint": "get_features",
+      "service": "BackendGetFeatures",
+      "path": "response-_-queues[0]"
+    },
+    "@decorators.BackendGet_featuresRequestType": {
+      "endpoint": "get_features",
+      "service": "BackendGetFeatures",
+      "path": "request"
+    },
+    "@decorators.BackendGet_logRequestType": {
+      "endpoint": "get_log",
+      "service": "BackendGetLog",
+      "path": "request"
+    },
+    "@decorators.BackendGet_logResponseType": {
+      "endpoint": "get_log",
+      "service": "BackendGetLog",
+      "path": "response"
+    },
+    "@decorators.BackendList_jobsRequestType": {
+      "endpoint": "listJobs",
+      "service": "backendListJobs",
+      "path": "request"
+    },
+    "@decorators.BackendList_jobsResponseType": {
+      "endpoint": "listJobs",
+      "service": "backendListJobs",
+      "path": "response"
+    },
+    "@decorators.BackendSubmit_jobRequestType": {
+      "endpoint": "submit_job",
+      "service": "BackendSubmitJob",
+      "path": "request"
+    },
+    "BackendCancel_jobRequestType": {
+      "jobid_list": "string",
+      "public_ip": "string",
+      "secret_ocid": "string",
+      "selected_function": "string",
+      "user": "string"
+    },
+    "BackendGet_featuresReqsponseType": "object",
+    "BackendGet_featuresRequestType": {
+      "path_conf_file": "string",
+      "public_ip": "string",
+      "secret_ocid": "string",
+      "selected_function": "string",
+      "user": "string"
+    },
+    "BackendGet_logRequestType": {
+      "jobid": "string",
+      "public_ip": "string",
+      "secret_ocid": "string",
+      "selected_function": "string",
+      "user": "string",
+      "working_directory": "string"
+    },
+    "BackendGet_logResponseType": {
+      "jobid": "string",
+      "log": "string"
+    },
+    "BackendList_jobsRequestType": {
+      "public_ip": "string",
+      "searchdate": "string",
+      "secret_ocid": "string",
+      "selected_function": "string",
+      "user": "string"
+    },
+    "instanceTypeTypes": {
+        "ad": "string",
+        "boot_volume_size": "number",
+        "cluster_network": "boolean",
+        "default": "boolean",
+        "hyperthreading": "boolean",
+        "image": "string",
+        "instance_keyword": "string",
+        "instance_pool_custom_memory": "boolean",
+        "instance_pool_memory": "number",
+        "marketplace_listing": "string",
+        "max_cluster_count": "number",
+        "max_cluster_size": "number",
+        "max_number_nodes": "number",
+        "name": "string",
+        "nb_cpus": "string",
+        "nb_gpus": "string",
+        "permanent": "boolean",
+        "private_subnet": "string",
+        "private_subnet_id": "string",
+        "region": "string",
+        "shape": "string",
+        "targetCompartment": "string",
+        "use_marketplace_image": "boolean",
+        "use_old_marketplace_image": "boolean"
+      },
+
+    "BackendList_jobsResponseType": 
+      {
+        "features": "string",
+        "jobid": "number",
+        "name": "string",
+        "nodelist": "string",
+        "num_nodes": "number",
+        "partition": "string",
+        "reason": "string",
+        "state": "string",
+        "time": "number",
+        "working_directory": "string"
+      }
+    ,
+    "BackendSubmit_jobRequestType": {
+      "base64_message": "string",
+      "constraint": "string",
+      "jobname": "string",
+      "nb_cpus": "string",
+      "nb_gpus": "string",
+      "nb_nodes": "string",
+      "partition": "string",
+      "public_ip": "string",
+      "secret_ocid": "string",
+      "selected_function": "string",
+      "user": "string"
+    },
+    "FileType": {
+      "name": "string",
+      "size": "number"
+    }
+
+  },
+  "eventListeners": {
+    "buttonAction": {
+      "chains": [
+        {
+          "chainId": "closeDialogLogFileActionChain"
+        }
+      ]
+    },
+    "buttonAction2": {
+      "chains": [
+        {
+          "chainId": "openDialogSettings"
+        }
+      ]
+    },
+    "buttonAction3": {
+      "chains": [
+        {
+          "chainId": "closeDialogSettings"
+        }
+      ]
+    },
+    "filePickerInputSelect": {
+      "chains": [
+        {
+          "chainId": "filePickerSelectActionChain",
+          "parameters": {
+            "files": "[[ Array.prototype.slice.call($event.detail.files) ]]"
+          }
+        }
+      ]
+    },
+    "iconClick": {
+      "chains": [
+        {
+          "chainId": "clickCancelJobActionChain",
+          "parameters": {
+            "current": "{{ $current }}",
+            "index": "{{ $current.index }}",
+            "key": "{{ $current.key }}"
+          }
+        }
+      ]
+    },
+    "iconLogFileClick": {
+      "chains": [
+        {
+          "chainId": "openDialogLogFileActionChain",
+          "parameters": {
+            "key": "{{ $current.key }}",
+            "index": "{{ $current.index }}",
+            "current": "{{ $current }}"
+          }
+        }
+      ]
+    },
+    "listJobsButtonAction": {
+      "chains": [
+        {
+          "chainId": "listJobsActionChain"
+        }
+      ]
+    },
+    "sjNodeTypeInputValueItem": {
+      "chains": [
+        {
+          "chainId": "selectNodeTypeChangeActionChain",
+          "parameters": {
+            "key": "{{$event.detail.value.key}}",
+            "data": "{{$event.detail.value.data}}",
+            "metadata": "{{$event.detail.value.metadata}}"
+          }
+        }
+      ]
+    },
+    "sjParttitionInputValueItem": {
+      "chains": [
+        {
+          "chainId": "selectValueItemChangeActionChain",
+          "parameters": {
+            "key": "{{$event.detail.value.key}}",
+            "data": "{{$event.detail.value.data}}",
+            "metadata": "{{$event.detail.value.metadata}}"
+          }
+        }
+      ]
+    },
+    "submitJobsButtonAction": {
+      "chains": [
+        {
+          "chainId": "submitJobActionChain"
+        }
+      ]
+    },
+    "switchShowAllValue": {
+      "chains": [
+        {
+          "chainId": "switchShowJobsActionChain",
+          "parameters": {
+            "value": "{{ $event.detail.value }}"
+          }
+        }
+      ]
+    },
+    "toggleDrawer": {
+      "chains": [
+        {
+          "chainId": "application:toggleDrawerHandler"
+        }
+      ]
+    },
+    "vbEnter": {
+      "chains": [
+        {
+          "parameters": {},
+          "chainId": "retrieveFeaturesActionChain"
+        }
+      ]
+    }
+
+  },
+  "imports": {
+    "components": {
+      "oj-button": {
+        "path": "ojs/ojbutton"
+      },
+      "oj-collapsible": {
+        "path": "ojs/ojcollapsible"
+      },
+      "oj-dialog": {
+        "path": "ojs/ojdialog"
+      },
+      "oj-file-picker": {
+        "path": "ojs/ojfilepicker"
+      },
+      "oj-form-layout": {
+        "path": "ojs/ojformlayout"
+      },
+      "oj-input-date": {
+        "path": "ojs/ojdatetimepicker"
+      },
+      "oj-input-number": {
+        "path": "ojs/ojinputnumber"
+      },
+      "oj-input-text": {
+        "path": "ojs/ojinputtext"
+      },
+      "oj-label": {
+        "path": "ojs/ojlabel"
+      },
+      "oj-select-single": {
+        "path": "ojs/ojselectsingle"
+      },
+      "oj-switch": {
+        "path": "ojs/ojswitch"
+      },
+      "oj-switcher": {
+        "path": "ojs/ojswitcher"
+      },
+      "oj-table": {
+        "path": "ojs/ojtable"
+      },
+      "oj-text-area": {
+        "path": "ojs/ojinputtext"
+      }
+
+    }
+  }
+}

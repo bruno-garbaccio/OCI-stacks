@@ -1,0 +1,112 @@
+{
+  "root": "callFunctionInitVariables",
+  "description": "",
+  "actions": {
+    "fireNotification": {
+      "module": "vb/action/builtin/fireNotificationEventAction",
+      "parameters": {
+        "target": "leaf",
+        "summary": "[[ $chain.results.callRestGetFeatures.message.summary ]]",
+        "type": "error",
+        "displayMode": "persist"
+      }
+    },
+    "callRestGetFeatures": {
+      "module": "vb/action/builtin/restAction",
+      "parameters": {
+        "endpoint": "BackendGetFeatures/get_features",
+        "body": "{{ $page.variables.BackendGet_featuresRequestVariable }}"
+      },
+      "outcomes": {
+        "failure": "fireNotification",
+        "success": "assignVariablesBackendGetFeaturestADPVariable"
+      }
+    },
+    "assignVariablesBackendGetFeaturestADPVariable": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.BackendGet_featurestADPVariable": {
+          "source": {
+            "data": "{{ $chain.results.callRestGetFeatures.body.queues }}"
+          },
+          "reset": "none",
+          "auto": "always",
+          "mapping": {
+            "$target.data": {
+              "source": "$source.data",
+              "reset": "empty"
+            }
+          }
+        }
+      },
+      "label": "Assign response values to ADP"
+    },
+    "callFunctionInitVariables": {
+      "module": "vb/action/builtin/callModuleFunctionAction",
+      "parameters": {
+        "module": "[[ $functions ]]",
+        "functionName": "initVariables",
+        "returnType": "object"
+      },
+      "outcomes": {
+        "success": "assignVariablesBackendGetFeaturesRequestVariable"
+      }
+    },
+    "assignVariablesBackendGetFeaturesRequestVariable": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.BackendGet_featuresRequestVariable": {
+          "source": {
+            "path_conf_file": "{{ $chain.results.callFunctionInitVariables.path_conf_file }}",
+            "public_ip": "{{ $chain.results.callFunctionInitVariables.public_ip }}",
+            "secret_ocid": "{{ $chain.results.callFunctionInitVariables.secret_ocid }}",
+            "user": "{{ $chain.results.callFunctionInitVariables.user }}",
+            "selected_function": "get_features"
+          },
+          "reset": "none",
+          "auto": "always"
+        },
+        "$page.variables.pathConfigFile": {
+          "source": "{{ $chain.results.callFunctionInitVariables.path_conf_file }}"
+        },
+        "$page.variables.BackendList_jobsRequestVariable": {
+          "source": {
+            "public_ip": "{{ $chain.results.callFunctionInitVariables.public_ip }}",
+            "secret_ocid": "{{ $chain.results.callFunctionInitVariables.secret_ocid }}",
+            "user": "{{ $chain.results.callFunctionInitVariables.user }}",
+            "searchdate": "{{ $chain.results.callFunctionInitVariables.searchdate }}",
+            "selected_function": "list_jobs"
+          },
+          "reset": "none",
+          "auto": "always",
+          "mapping": {
+            "$target.public_ip": {
+              "source": "$source.public_ip",
+              "reset": "empty"
+            },
+            "$target.secret_ocid": {
+              "source": "$source.secret_ocid",
+              "reset": "empty"
+            },
+            "$target.user": {
+              "source": "$source.user",
+              "reset": "empty"
+            },
+            "$target.searchdate": {
+              "source": "$source.searchdate",
+              "reset": "empty"
+            },
+            "$target.selected_function": {
+              "source": "$source.selected_function",
+              "reset": "empty"
+            }
+          }
+        }
+      },
+      "outcomes": {
+        "success": "callRestGetFeatures"
+      },
+      "label": "Assign Input Variables for retrieving Features"
+    }
+  }
+}

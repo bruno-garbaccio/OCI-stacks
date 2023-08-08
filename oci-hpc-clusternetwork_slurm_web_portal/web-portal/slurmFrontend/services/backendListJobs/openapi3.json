@@ -1,0 +1,118 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "backendListJobs",
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "vb-catalog://backends/API_GATEWAY_BACKEND",
+            "description": "API GATEWAY BACKEND"
+        }
+    ],
+    "paths": {
+        "/list_jobs": {
+            "post": {
+                "operationId": "listJobs",
+                "responses": {
+                    "default": {
+                        "description": "Response for default",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PostList_jobsResponse"
+                                },
+                                "examples": {
+                                    "vb": {
+                                        "summary": "Example stored by VB User",
+                                        "externalValue": "./examples/listJobs/response_default_application_json_vb.json"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "x-vb": {
+                    "actionHint": "getMany"
+                },
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PostList_jobsRequest"
+                            },
+                            "examples": {
+                                "vb": {
+                                    "externalValue": "./examples/listJobs/request_application_json_vb.json"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "PostList_jobsRequest": {
+                "type": "object",
+                "properties": {
+                    "user": {
+                        "type": "string"
+                    },
+                    "public_ip": {
+                        "type": "string"
+                    },
+                    "secret_ocid": {
+                        "type": "string"
+                    },
+                    "selected_function": {
+                        "type": "string"
+                    },
+                    "searchdate": {
+                        "type": "string"
+                    }
+                }
+            },
+            "PostList_jobsResponse": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "jobid": {
+                            "type": "integer"
+                        },
+                        "name": {
+                            "type": "string"
+                        },
+                        "working_directory": {
+                            "type": "string"
+                        },
+                        "partition": {
+                            "type": "string"
+                        },
+                        "features": {
+                            "type": "string",
+                            "nullable": true
+                        },
+                        "nodelist": {
+                            "type": "string"
+                        },
+                        "time": {
+                            "type": "integer"
+                        },
+                        "num_nodes": {
+                            "type": "integer"
+                        },
+                        "state": {
+                            "type": "string"
+                        },
+                        "reason": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

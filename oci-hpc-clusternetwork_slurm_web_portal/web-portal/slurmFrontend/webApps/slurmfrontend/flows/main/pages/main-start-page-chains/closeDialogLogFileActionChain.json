@@ -1,0 +1,14 @@
+{
+  "description": "",
+  "root": "callComponentDialogLogFileContentClose",
+  "actions": {
+    "callComponentDialogLogFileContentClose": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('dialogLogFileContent') }}",
+        "method": "close"
+      }
+    }
+  },
+  "variables": {}
+}

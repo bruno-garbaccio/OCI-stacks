@@ -1,0 +1,14 @@
+{
+  "description": "",
+  "root": "callComponentDialogSettingsOpen",
+  "actions": {
+    "callComponentDialogSettingsOpen": {
+      "module": "vb/action/builtin/callComponentMethodAction",
+      "parameters": {
+        "component": "{{ document.getElementById('dialogSettings') }}",
+        "method": "open"
+      }
+    }
+  },
+  "variables": {}
+}

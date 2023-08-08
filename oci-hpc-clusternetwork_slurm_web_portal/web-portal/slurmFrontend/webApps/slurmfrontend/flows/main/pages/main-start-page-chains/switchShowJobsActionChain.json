@@ -1,0 +1,59 @@
+{
+  "description": "",
+  "root": "ifValue",
+  "actions": {
+    "ifValue": {
+      "module": "vb/action/builtin/ifAction",
+      "parameters": {
+        "condition": "[[ $variables.value ]]"
+      },
+      "outcomes": {
+        "true": "assignVariablesBackendListJobsADPVariable",
+        "false": "assignVariablesBackendListJobsADPVariable2"
+      }
+    },
+    "assignVariablesBackendListJobsADPVariable": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.BackendList_jobsADPVariable": {
+          "source": {
+            "data": "{{ $page.variables.allJobsArrayVariable }}"
+          },
+          "reset": "none",
+          "auto": "always",
+          "mapping": {
+            "$target.data": {
+              "source": "$source.data",
+              "reset": "empty"
+            }
+          }
+        }
+      }
+    },
+    "assignVariablesBackendListJobsADPVariable2": {
+      "module": "vb/action/builtin/assignVariablesAction",
+      "parameters": {
+        "$page.variables.BackendList_jobsADPVariable": {
+          "source": {
+            "data": "{{ $functions.showRunningAndPending($page.variables.allJobsArrayVariable) }}"
+          },
+          "reset": "none",
+          "auto": "always",
+          "mapping": {
+            "$target.data": {
+              "source": "$source.data",
+              "reset": "empty"
+            }
+          }
+        }
+      }
+    }
+  },
+  "variables": {
+    "value": {
+      "required": true,
+      "type": "any",
+      "input": "fromCaller"
+    }
+  }
+}
