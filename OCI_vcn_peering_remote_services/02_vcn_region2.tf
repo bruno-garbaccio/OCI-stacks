@@ -10,7 +10,7 @@ resource oci_core_vcn r2-vcn {
   cidr_blocks    = [ var.r2_cidr_vcn ]
   compartment_id = var.r2_compartment_ocid
   display_name   = var.r2_name_vcn
-  dns_label      = var.r2_name_vcn
+  dns_label      = "vcn2"
 }
 
 # ------ Create a new Internet Gategay
