@@ -2,7 +2,7 @@
 
 This stack deploys a GPU VM in a new VCN. JupyterLab is installed in a 
 virtual conda environment (tf) and listens to port 8888. In addition,
-the following python packages are installed in teh virtual environment "tf":
+the following python packages are installed in the virtual environment "tf":
 
 * python=3.9
 * cudatoolkit=11.2.2
