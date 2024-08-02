@@ -1,0 +1,92 @@
+---
+title: Simple FSS deployment
+description: Deploys FSS in an existing VCN
+schemaVersion: 1.1.0
+version: "2022100901"
+informationalText: Deploys FSS in an existing VCN
+logoUrl: https://cloudmarketplace.oracle.com/marketplace/content?contentId=80357668
+
+source:
+  type: marketplace
+  reference: 67628143
+locale: "en"
+
+
+variableGroups:
+  - title: "File System options"
+    variables:
+      - ${fss_compartment}
+      - ${fss_ad}      
+      - ${fss_name} 
+      - ${nfs_source_path}      
+      - ${home_fss}
+      - ${vcn_compartment}       
+      - ${vcn_id}       
+      - ${private_subnet_id}           
+  - title: "Hidden"
+    variables:
+      - ${tenancy_ocid}
+      - ${region}
+    visible: false
+
+variables:
+  home_fss:
+    type: boolean
+    title: "Create a second FSS for /home."
+    description: "Create a second FSS for /home."
+    default: false        
+
+  fss_compartment:
+    title: "FSS compartment"
+    description: "Compartment to add the FSS Mount Target and File System"
+    type: oci:identity:compartment:id
+    default: ${compartment_ocid}
+    required: true
+
+  fss_ad:
+    type: oci:identity:availabilitydomain:name
+    dependsOn:
+      compartmentId: ${fss_compartment}
+    default: ${ad}
+    description: "FSS Availability Domain"
+    title: "FSS Availability Domain"
+    required: true
+    visible: complexExpression
+
+  fss_name:
+    title: "Name of the FSS"
+    description: "Name of the FSS"
+    default: ""
+    type: string
+    required: true
+
+  nfs_source_path:
+    type: string
+    title: "Mount point"
+    default: "/app"
+    description: "Value of the mount point"
+    required: true
+
+
+  vcn_compartment:
+    title: "VCN compartment"
+    type: oci:identity:compartment:id
+    default: ${fss_compartment}
+    required: true
+
+  vcn_id:
+    type: oci:core:vcn:id
+    title: "Existing network"
+    default: ''
+    required: true
+    dependsOn:
+      compartmentId: ${vcn_compartment}    
+
+  private_subnet_id:
+    title: Private Subnet
+    type: oci:core:subnet:id
+    dependsOn:
+      compartmentId: ${vcn_compartment}
+      vcnId: ${vcn_id}
+      hidePublicSubnet: true
+    required: true      
