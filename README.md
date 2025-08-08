@@ -4,7 +4,7 @@ The terraform scripts present in this repo are mines and provided "as is". They 
 
 # Summary
 
-[Stack to deploy 2 or 3 VCN's in 2 or 3 regions with remote peerinf services](OCI_vcn_peering_remote_services)
+[Stack to deploy 2 or 3 VCN's in 2 or 3 regions with remote peering services](OCI_vcn_peering_remote_services)
 
 [Based on the HPC stack, adding a Slurm Web portal](oci-hpc-clusternetwork_slurm_web_portal)
 
